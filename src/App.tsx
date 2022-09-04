@@ -1,6 +1,6 @@
 /* import { invoke } from "@tauri-apps/api/tauri"; */
 
-import { MachineCard } from "./components/MachineCard";
+import { MachineCard, Navbar } from "./components";
 import { Machine } from "./types";
 
 const MACHINES: Machine[] = [
@@ -13,10 +13,13 @@ const MACHINES: Machine[] = [
 
 function App() {
   return (
-    <div className="mx-10 my-5 max-w-3xl">
-      <h1 className="text-3xl">Machines</h1>
-      <br />
-      <MachineCard machine={MACHINES[0]} />
+    <div>
+      <Navbar />
+      <div className="mx-10 my-5 max-w-3xl">
+        <h1 className="text-3xl">Machines</h1>
+        <br />
+        <MachineCard machine={MACHINES[0]} />
+      </div>
     </div>
   );
 }
