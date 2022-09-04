@@ -1,11 +1,10 @@
 export enum MachineStatus {
-  Up,
-  Down,
+  Up = "UP",
+  Down = "DOWN",
 }
 
 export type Machine = {
   name: string;
   ip: string;
   user: string;
-  status?: MachineStatus;
 };

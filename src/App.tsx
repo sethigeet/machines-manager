@@ -15,10 +15,22 @@ function App() {
   return (
     <div>
       <Navbar />
-      <div className="mx-10 my-5 max-w-3xl">
-        <h1 className="text-3xl">Machines</h1>
+      <div className="mx-auto my-5 grid place-items-center">
+        <h1 className="text-center text-5xl">Machines</h1>
         <br />
-        <MachineCard machine={MACHINES[0]} />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 place-items-center">
+          <MachineCard machine={MACHINES[0]} />
+          <MachineCard machine={MACHINES[0]} />
+          <MachineCard machine={MACHINES[0]} />
+          <MachineCard machine={MACHINES[0]} />
+          <MachineCard machine={MACHINES[0]} />
+          <MachineCard machine={MACHINES[0]} />
+          <MachineCard machine={MACHINES[0]} />
+          <MachineCard machine={MACHINES[0]} />
+          <MachineCard machine={MACHINES[0]} />
+          <MachineCard machine={MACHINES[0]} />
+          <MachineCard machine={MACHINES[0]} />
+        </div>
       </div>
     </div>
   );
