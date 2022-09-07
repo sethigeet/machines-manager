@@ -1,7 +1,12 @@
 export enum MachineStatus {
-  Up = "UP",
-  Down = "DOWN",
+  Up = "Up",
+  Down = "Down",
 }
+
+export type MachineStatusResponse = {
+  status: MachineStatus;
+  ping?: number;
+};
 
 export type Machine = {
   name: string;
