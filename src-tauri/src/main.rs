@@ -19,9 +19,27 @@ mod shell;
 pub type ConfigState = Mutex<Config>;
 
 #[tauri::command(async)]
-fn get_machines<'r>(config: State<'r, ConfigState>) -> Result<Vec<Machine>, AppError> {
+fn get_machines<'r>(config: State<'r, ConfigState>) -> Vec<Machine> {
     let config = config.lock().unwrap();
-    Ok(config.machines.clone())
+    config.machines.clone()
+}
+
+#[tauri::command(async)]
+fn get_auto_refresh<'r>(config: State<'r, ConfigState>) -> bool {
+    let config = config.lock().unwrap();
+    config.auto_refresh.clone()
+}
+
+#[tauri::command(async)]
+fn set_auto_refresh<'r>(
+    auto_refresh: bool,
+    config: State<'r, ConfigState>,
+) -> Result<(), AppError> {
+    let mut config = config.lock().unwrap();
+    config.auto_refresh = auto_refresh;
+    config::save_config(&config)?;
+
+    Ok(())
 }
 
 #[tauri::command(async)]
@@ -51,7 +69,12 @@ fn main() -> Result<(), AppError> {
 
     tauri::Builder::default()
         .manage(Mutex::<Config>::new(config))
-        .invoke_handler(tauri::generate_handler![get_machines, get_machine_status])
+        .invoke_handler(tauri::generate_handler![
+            get_machines,
+            get_machine_status,
+            get_auto_refresh,
+            set_auto_refresh
+        ])
         .run(tauri::generate_context!())?;
 
     Ok(())

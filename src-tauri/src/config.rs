@@ -22,13 +22,33 @@ pub struct Machine {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase", default)]
 pub struct Config {
     pub machines: Vec<Machine>,
+    pub auto_refresh: bool,
+}
+
+impl Default for Config {
+    fn default() -> Self {
+        Self {
+            machines: Default::default(),
+            auto_refresh: true,
+        }
+    }
+}
+
+impl Config {
+    pub fn new() -> Self {
+        Self {
+            machines: vec![],
+            auto_refresh: true,
+        }
+    }
 }
 
 pub fn load_config() -> Result<Config, AppError> {
     if !Path::new(CONFIG_FILE_PATH.as_path()).exists() {
-        let cfg = Config { machines: vec![] };
+        let cfg = Config::new();
         save_config(&cfg)?;
         return Ok(cfg);
     }
