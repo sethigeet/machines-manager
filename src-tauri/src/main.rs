@@ -64,6 +64,47 @@ fn get_machine_status(ip: String) -> Result<MachineStatusResponse, AppError> {
     Ok(MachineStatusResponse::up(80))
 }
 
+#[tauri::command(async)]
+fn add_machine<'r>(machine: Machine, config: State<'r, ConfigState>) -> Result<(), AppError> {
+    let mut config = config.lock().unwrap();
+    config.machines.push(machine);
+    config::save_config(&config)?;
+
+    Ok(())
+}
+
+#[tauri::command(async)]
+fn edit_machine<'r>(machine: Machine, config: State<'r, ConfigState>) -> Result<(), AppError> {
+    let mut config = config.lock().unwrap();
+    let idx = match config.machines.iter().position(|m| m.name == machine.name) {
+        Some(i) => i,
+        None => return Err(AppError::MachineDoesNotExistError(machine.name)),
+    };
+    let m = config.machines.get_mut(idx).unwrap();
+    *m = machine;
+
+    config::save_config(&config)?;
+
+    Ok(())
+}
+
+#[tauri::command(async)]
+fn delete_machine<'r>(
+    machine_name: String,
+    config: State<'r, ConfigState>,
+) -> Result<(), AppError> {
+    let mut config = config.lock().unwrap();
+    let idx = match config.machines.iter().position(|m| m.name == machine_name) {
+        Some(i) => i,
+        None => return Err(AppError::MachineDoesNotExistError(machine_name)),
+    };
+    config.machines.remove(idx);
+
+    config::save_config(&config)?;
+
+    Ok(())
+}
+
 fn main() -> Result<(), AppError> {
     let config = config::load_config()?;
 
@@ -73,7 +114,10 @@ fn main() -> Result<(), AppError> {
             get_machines,
             get_machine_status,
             get_auto_refresh,
-            set_auto_refresh
+            set_auto_refresh,
+            add_machine,
+            edit_machine,
+            delete_machine
         ])
         .run(tauri::generate_context!())?;
 

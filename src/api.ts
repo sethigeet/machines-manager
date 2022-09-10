@@ -18,3 +18,9 @@ export const getAutoRefresh = async () =>
   await invoke<boolean>("get_auto_refresh");
 export const setAutoRefresh = async (autoRefresh: boolean) =>
   await invoke<null>("set_auto_refresh", { autoRefresh });
+export const addMachine = async (machine: Machine) =>
+  await invoke<null>("add_machine", { machine });
+export const editMachine = async (machine: Machine) =>
+  await invoke<null>("edit_machine", { machine });
+export const deleteMachine = async (machineName: string) =>
+  await invoke<null>("delete_machine", { machineName });

@@ -10,6 +10,9 @@ pub enum AppError {
 
     #[error("error while running tauri application")]
     TauriError(#[from] tauri::Error),
+
+    #[error("a machine with the given name does not exist: {0}")]
+    MachineDoesNotExistError(String),
 }
 
 // we must manually implement serde::Serialize

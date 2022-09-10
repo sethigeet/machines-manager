@@ -16,9 +16,9 @@ lazy_static! {
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Machine {
-    name: String,
-    ip: String,
-    user: String,
+    pub name: String,
+    pub ip: String,
+    pub user: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

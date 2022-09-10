@@ -1,17 +1,22 @@
+import { useState } from "react";
+
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
+  AddForm,
   ErrorDisplay,
   Loading,
   MachineCard,
   Navbar,
   PowerOffIcon,
-  RefreshIcon,
 } from "./components";
 import { getMachines } from "./api";
 import { MachineStatus, MachineStatusResponse } from "./types";
+import { ArrowPathIcon, PlusIcon } from "@heroicons/react/24/outline";
 
 function App() {
+  const [addFormOpen, setAddFormOpen] = useState(false);
+
   const queryClient = useQueryClient();
 
   const { data, isLoading, error, refetch } = useQuery(
@@ -22,6 +27,7 @@ function App() {
   return (
     <div>
       <Navbar />
+      <AddForm open={addFormOpen} onClose={() => setAddFormOpen(false)} />
       <div className="mx-auto my-5 grid place-items-center">
         <h1 className="text-center text-5xl mb-3 border-b-2 border-b-slate-300">
           Machines
@@ -31,7 +37,7 @@ function App() {
             className="icon-btn primary-btn"
             onClick={() => queryClient.invalidateQueries(["getMachineStatus"])}
           >
-            <RefreshIcon />
+            <ArrowPathIcon className="w-4" />
             Refresh All
           </button>
           <button
@@ -60,6 +66,13 @@ function App() {
           >
             <PowerOffIcon />
             Shutdown All
+          </button>
+          <button
+            className="icon-btn success-btn"
+            onClick={() => setAddFormOpen(true)}
+          >
+            <PlusIcon className="w-4" />
+            Add Machine
           </button>
         </div>
         <Loading loading={isLoading} />

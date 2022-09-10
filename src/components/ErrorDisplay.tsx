@@ -1,13 +1,15 @@
+import { Fragment } from "react";
+
 import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
-import { Fragment } from "react";
 
 type Props = {
   error?: string;
   onClose?: () => void;
+  btnText?: string;
 };
 
-export const ErrorDisplay = ({ error, onClose }: Props) => {
+export const ErrorDisplay = ({ error, onClose, btnText = "Retry" }: Props) => {
   function handleClose() {
     if (onClose) {
       onClose();
@@ -58,7 +60,7 @@ export const ErrorDisplay = ({ error, onClose }: Props) => {
                     className="primary-btn"
                     onClick={handleClose}
                   >
-                    Retry
+                    {btnText}
                   </button>
                 </div>
               </Dialog.Panel>

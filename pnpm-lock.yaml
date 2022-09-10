@@ -3,6 +3,7 @@ lockfileVersion: 5.3
 specifiers:
   '@headlessui/react': ^1.6.6
   '@heroicons/react': ^2.0.10
+  '@tailwindcss/forms': ^0.5.3
   '@tanstack/react-query': ^4.2.3
   '@tauri-apps/api': ^1.0.2
   '@tauri-apps/cli': ^1.0.5
@@ -22,6 +23,7 @@ specifiers:
 dependencies:
   '@headlessui/react': 1.6.6_react-dom@18.2.0+react@18.2.0
   '@heroicons/react': 2.0.10_react@18.2.0
+  '@tailwindcss/forms': 0.5.3_tailwindcss@3.1.8
   '@tanstack/react-query': 4.2.3_react-dom@18.2.0+react@18.2.0
   '@tauri-apps/api': 1.0.2
   date-fns: 2.29.2
@@ -393,6 +395,15 @@ packages:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.13.0
     dev: true
+
+  /@tailwindcss/forms/0.5.3_tailwindcss@3.1.8:
+    resolution: {integrity: sha512-y5mb86JUoiUgBjY/o6FJSFZSEttfb3Q5gllE4xoKjAAD+vBrnIhE4dViwUuow3va8mpH4s9jyUbUbrRGoRdc2Q==}
+    peerDependencies:
+      tailwindcss: '>=3.0.0 || >= 3.0.0-alpha.1'
+    dependencies:
+      mini-svg-data-uri: 1.4.4
+      tailwindcss: 3.1.8
+    dev: false
 
   /@tanstack/query-core/4.2.3:
     resolution: {integrity: sha512-zdt5lYWs1dZaA3IxJbCgtAfHZJScRZONpiLL7YkeOkrme5MfjQqTpjq7LYbzpyuwPOh2Jx68le0PLl57JFv5hQ==}
@@ -1121,6 +1132,11 @@ packages:
       braces: 3.0.2
       picomatch: 2.3.1
     dev: true
+
+  /mini-svg-data-uri/1.4.4:
+    resolution: {integrity: sha512-r9deDe9p5FJUPZAk3A59wGH7Ii9YrjjWw0jmw/liSbHl2CHiyXj6FcDXDu2K3TjVAXqiJdaw3xxwlZZr9E6nHg==}
+    hasBin: true
+    dev: false
 
   /minimist/1.2.6:
     resolution: {integrity: sha512-Jsjnk4bw3YJqYzbdyBiNsPWHPfO++UGG749Cxs6peCu5Xg4nrena6OVxOYxrQTqww0Jmwt+Ref8rggumkTLz9Q==}
