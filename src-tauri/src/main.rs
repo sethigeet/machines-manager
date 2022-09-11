@@ -83,6 +83,8 @@ fn edit_machine<'r>(machine: Machine, config: State<'r, ConfigState>) -> Result<
     let m = config.machines.get_mut(idx).unwrap();
     *m = machine;
 
+    config.machines.sort_by(|m1, m2| m1.name.cmp(&m2.name));
+
     config::save_config(&config)?;
 
     Ok(())
@@ -105,6 +107,25 @@ fn delete_machine<'r>(
     Ok(())
 }
 
+#[tauri::command(async)]
+fn shutdown_machine<'r>(
+    machine_name: String,
+    password: String,
+    config: State<'r, ConfigState>,
+) -> Result<(), AppError> {
+    let config = config.lock().unwrap();
+    let machine = match config.machines.iter().find(|m| m.name == machine_name) {
+        Some(m) => m,
+        None => return Err(AppError::MachineDoesNotExistError(machine_name)),
+    };
+    let mut cmd = shell::get_shutdown_cmd(machine, password)?;
+    if let Err(err) = cmd.output() {
+        return Err(AppError::ShellCmdError(err.to_string()));
+    }
+
+    Ok(())
+}
+
 fn main() -> Result<(), AppError> {
     let config = config::load_config()?;
 
@@ -117,7 +138,8 @@ fn main() -> Result<(), AppError> {
             set_auto_refresh,
             add_machine,
             edit_machine,
-            delete_machine
+            delete_machine,
+            shutdown_machine
         ])
         .run(tauri::generate_context!())?;
 

@@ -61,7 +61,9 @@ function App() {
               }, [] as string[]);
 
               // TODO: Shutdown all the fltered machines here!
-              console.log(onMachineNames);
+              alert(
+                `NOT IMPLEMENTED!\nShutdown: ${JSON.stringify(onMachineNames)}`
+              );
             }}
           >
             <PowerOffIcon />

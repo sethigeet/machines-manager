@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   ArrowUpIcon,
   ArrowDownIcon,
@@ -13,9 +14,7 @@ import formatDistance from "date-fns/formatDistance";
 
 import { Machine, MachineStatus } from "../types";
 import { getMachineStatus } from "../api";
-import { PowerOffIcon } from "./icons";
-import { EditForm } from "./EditForm";
-import { useState } from "react";
+import { EditForm, ShutdownForm, PowerOffIcon } from "./";
 
 type Props = {
   machine: Machine;
@@ -23,7 +22,7 @@ type Props = {
 
 export const MachineCard = ({ machine }: Props) => {
   const [editOpen, setEditOpen] = useState(false);
-  const { name, user, ip } = machine;
+  const [shutdownOpen, setShutdownOpen] = useState(false);
 
   const {
     data,
@@ -33,7 +32,9 @@ export const MachineCard = ({ machine }: Props) => {
     isRefetchError,
     refetch,
     dataUpdatedAt,
-  } = useQuery(["getMachineStatus", ip], () => getMachineStatus(ip));
+  } = useQuery(["getMachineStatus", machine.name], () =>
+    getMachineStatus(machine.ip)
+  );
 
   const iconClassNames = "rounded-2xl p-2";
   const btnClassNames = `small-circular-btn bg-blue-100 hover:bg-blue-200 focus-visible:ring-blue-500`;
@@ -45,11 +46,16 @@ export const MachineCard = ({ machine }: Props) => {
         open={editOpen}
         onClose={() => setEditOpen(false)}
       />
+      <ShutdownForm
+        machineName={machine.name}
+        open={shutdownOpen}
+        onClose={() => setShutdownOpen(false)}
+      />
       <div className="p-5 bg-blue-50 rounded-lg w-80 flex flex-col drop-shadow-md">
         <div className="flex justify-between">
           <div>
             <span className="flex items-end text-3xl text-slate-800">
-              {name}
+              {machine.name}
               <button onClick={() => setEditOpen(true)}>
                 <PencilSquareIcon className="w-5 text-slate-400 mb-1 ml-2" />
               </button>
@@ -58,13 +64,13 @@ export const MachineCard = ({ machine }: Props) => {
               <div className="flex">
                 <UserIcon className="w-4" />
                 <span className="text-xs text-slate-700 ml-1 font-semibold">
-                  {user}
+                  {machine.user}
                 </span>
               </div>
               <div className="flex ml-2">
                 <GlobeAltIcon className="w-[0.75rem]" />
                 <span className="text-xs text-slate-700 ml-1 font-semibold">
-                  {ip}
+                  {machine.ip}
                 </span>
               </div>
             </div>
@@ -72,6 +78,7 @@ export const MachineCard = ({ machine }: Props) => {
           <div className="flex flex-col">
             <button
               className={`text-red-600 ${btnClassNames}`}
+              onClick={() => setShutdownOpen(true)}
               disabled={!data || data.status !== MachineStatus.Up}
             >
               <PowerOffIcon />

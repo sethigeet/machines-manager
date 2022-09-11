@@ -24,3 +24,10 @@ export const editMachine = async (machine: Machine) =>
   await invoke<null>("edit_machine", { machine });
 export const deleteMachine = async (machineName: string) =>
   await invoke<null>("delete_machine", { machineName });
+export const shutdownMachine = async ({
+  machineName,
+  password,
+}: {
+  machineName: string;
+  password: string;
+}) => await invoke<null>("shutdown_machine", { machineName, password });

@@ -2,27 +2,27 @@ import { Fragment, useState } from "react";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Dialog, Transition } from "@headlessui/react";
-import { GlobeAltIcon, PlusIcon, UserIcon } from "@heroicons/react/24/outline";
+import { UserIcon } from "@heroicons/react/24/outline";
 
-import { Machine } from "../types";
-import { addMachine } from "../api";
-import { ErrorDisplay, Input } from "./";
+import { shutdownMachine } from "../api";
+import { ErrorDisplay, PowerOffIcon, Input } from "./";
 
 type Props = {
   open: boolean;
   onClose: () => void;
+  machineName: string;
 };
 
-export const AddForm = ({ open, onClose }: Props) => {
-  const [machine, setMachine] = useState<Machine>({} as Machine);
+export const ShutdownForm = ({ open, onClose, machineName }: Props) => {
+  const [password, setPassword] = useState("");
 
   const queryClient = useQueryClient();
   const { mutate, isLoading, error, reset } = useMutation(
-    ["addMachine"],
-    addMachine,
+    ["shutdownMachine", machineName],
+    shutdownMachine,
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(["getMachines"]);
+        queryClient.invalidateQueries(["getMachineStatus", machineName]);
         onClose();
       },
     }
@@ -61,51 +61,34 @@ export const AddForm = ({ open, onClose }: Props) => {
                     as="h3"
                     className="mx-auto flex items-center text-2xl font-medium leading-6 text-slate-900 border-b-2 border-b-slate-300"
                   >
-                    <PlusIcon className="w-8 mr-2" />
-                    Add a New Machine
+                    <PowerOffIcon className="w-8 mr-2" />
+                    Shutdown {machineName}?
                   </Dialog.Title>
                   <form
                     className="mt-4"
                     onSubmit={(e) => {
                       e.preventDefault();
-                      mutate(machine);
+                      mutate({ machineName, password });
                     }}
                   >
                     <Input
-                      label="Name"
-                      value={machine.name}
-                      setValue={(val) =>
-                        setMachine((m) => ({ ...m, name: val }))
-                      }
+                      label="Password"
+                      type="password"
+                      value={password}
+                      setValue={(val) => setPassword(val)}
                       icon={<UserIcon className="w-4" />}
-                    />
-                    <Input
-                      label="User"
-                      value={machine.user}
-                      setValue={(val) =>
-                        setMachine((m) => ({ ...m, user: val }))
-                      }
-                      icon={<UserIcon className="w-4" />}
-                      className="mt-2"
-                    />
-                    <Input
-                      label="IP / Hostname"
-                      value={machine.ip}
-                      setValue={(val) => setMachine((m) => ({ ...m, ip: val }))}
-                      icon={<GlobeAltIcon className="w-4" />}
-                      className="mt-2"
                     />
                     <div className="mt-4">
                       <button
                         type="submit"
-                        className="icon-btn primary-btn"
+                        className="icon-btn danger-btn"
                         disabled={isLoading}
                       >
-                        Add
+                        Shutdown
                         {isLoading ? (
                           <div className="w-4 aspect-square border-2 border-blue-900 border-b-transparent rounded-full animate-spin" />
                         ) : (
-                          <PlusIcon className="w-4" />
+                          <PowerOffIcon className="w-4" />
                         )}
                       </button>
                     </div>

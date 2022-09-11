@@ -13,6 +13,12 @@ pub enum AppError {
 
     #[error("a machine with the given name does not exist: {0}")]
     MachineDoesNotExistError(String),
+
+    #[error("the current platform does not have support for the command: {0}")]
+    UnsupportedPlatform(String),
+
+    #[error("the shell command that was executed resulted in an error: {0}")]
+    ShellCmdError(String),
 }
 
 // we must manually implement serde::Serialize
