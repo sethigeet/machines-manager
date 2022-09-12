@@ -77,11 +77,7 @@ fn get_machine_status(ip: String) -> Result<MachineStatusResponse, AppError> {
 
     let ping = match PING_RE.captures_iter(out.as_str()).next() {
         Some(cap) => cap[1].parse()?,
-        None => {
-            return Err(AppError::ShellCmdError(format!(
-                "unable to parse the output of shell cmd: ping"
-            )))
-        }
+        None => return Ok(MachineStatusResponse::up(1.0)),
     };
 
     Ok(MachineStatusResponse::up(ping))
