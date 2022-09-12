@@ -19,7 +19,7 @@ mod responses;
 mod shell;
 
 lazy_static! {
-    static ref PING_RE: Regex = Regex::new(r"\stime=(\d+\.\d+)\sms").unwrap();
+    static ref PING_RE: Regex = Regex::new(r"\stime=(\d+\.?\d*)\s?ms").unwrap();
 }
 
 pub type ConfigState = Mutex<Config>;
