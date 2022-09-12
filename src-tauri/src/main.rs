@@ -6,6 +6,8 @@
 use std::sync::Mutex;
 
 use error::AppError;
+use lazy_static::lazy_static;
+use regex::Regex;
 use responses::MachineStatusResponse;
 use tauri::State;
 
@@ -15,6 +17,10 @@ mod config;
 mod error;
 mod responses;
 mod shell;
+
+lazy_static! {
+    static ref PING_RE: Regex = Regex::new(r"\stime=(\d+\.\d+)\sms").unwrap();
+}
 
 pub type ConfigState = Mutex<Config>;
 
@@ -53,15 +59,32 @@ fn get_machine_status(ip: String) -> Result<MachineStatusResponse, AppError> {
         return Ok(MachineStatusResponse::down());
     }
 
-    if cfg!(windows) {
-        if let Ok(out) = String::from_utf8(output.stdout) {
-            if out.contains("unreachable") {
-                return Ok(MachineStatusResponse::down());
+    let out = match String::from_utf8(output.stdout) {
+        Ok(o) => {
+            if cfg!(windows) {
+                if o.contains("unreachable") {
+                    return Ok(MachineStatusResponse::down());
+                }
             }
+            o
         }
-    }
+        Err(err) => {
+            return Err(AppError::ShellCmdError(format!(
+                "unable to read the output of shell cmd: ping\nerr: {err}"
+            )))
+        }
+    };
 
-    Ok(MachineStatusResponse::up(80))
+    let ping = match PING_RE.captures_iter(out.as_str()).next() {
+        Some(cap) => cap[1].parse()?,
+        None => {
+            return Err(AppError::ShellCmdError(format!(
+                "unable to parse the output of shell cmd: ping"
+            )))
+        }
+    };
+
+    Ok(MachineStatusResponse::up(ping))
 }
 
 #[tauri::command(async)]

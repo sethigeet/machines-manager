@@ -142,7 +142,7 @@ export const MachineCard = ({ machine }: Props) => {
                       </div>
                     </div>
                     <span className="text-sm text-slate-700 font-semibold">
-                      {data.ping !== null ? `${data.ping}ms` : "-"}
+                      {data.ping !== null ? `${data.ping?.toFixed(1)}ms` : "-"}
                     </span>
                   </div>
                 </>

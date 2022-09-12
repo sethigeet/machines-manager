@@ -1435,6 +1435,7 @@ version = "0.0.1"
 dependencies = [
  "dirs",
  "lazy_static",
+ "regex",
  "serde",
  "serde_json",
  "tauri",

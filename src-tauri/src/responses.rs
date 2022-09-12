@@ -9,11 +9,11 @@ enum MachineStatus {
 #[derive(Debug, Serialize)]
 pub struct MachineStatusResponse {
     status: MachineStatus,
-    ping: Option<u32>,
+    ping: Option<f32>,
 }
 
 impl MachineStatusResponse {
-    pub fn up(ping: u32) -> Self {
+    pub fn up(ping: f32) -> Self {
         Self {
             status: MachineStatus::Up,
             ping: Some(ping),

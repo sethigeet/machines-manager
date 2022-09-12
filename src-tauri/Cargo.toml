@@ -20,6 +20,7 @@ tauri = { version = "1.0.0", features = ["api-all"] }
 thiserror = "1.0.33"
 dirs = "4.0.0"
 lazy_static = "1.4.0"
+regex = "1.6.0"
 
 [features]
 # by default Tauri runs in production mode

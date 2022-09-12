@@ -19,6 +19,9 @@ pub enum AppError {
 
     #[error("the shell command that was executed resulted in an error: {0}")]
     ShellCmdError(String),
+
+    #[error("unable to parse the output of the shell cmd: {0}")]
+    ParseFloatError(#[from] std::num::ParseFloatError),
 }
 
 // we must manually implement serde::Serialize
