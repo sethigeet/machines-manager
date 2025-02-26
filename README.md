@@ -1,8 +1,7 @@
-# Machines Manager
+# Tauri + React + Typescript
 
-A simple application to manage windows machines.
+This template should help get you started developing with Tauri, React and Typescript in Vite.
 
-## Feature
-1. Check whether machine is running (ie. `ping`)
-2. Remote Shutdown
-3. Easily remote via `mstsc`
+## Recommended IDE Setup
+
+- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)

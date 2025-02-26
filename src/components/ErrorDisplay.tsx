@@ -1,6 +1,13 @@
 import { Fragment } from "react";
 
-import { Dialog, Transition } from "@headlessui/react";
+import {
+  Dialog,
+  DialogTitle,
+  DialogPanel,
+  Transition,
+  TransitionChild,
+  DialogBackdrop,
+} from "@headlessui/react";
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 
 type Props = {
@@ -19,7 +26,9 @@ export const ErrorDisplay = ({ error, onClose, btnText = "Retry" }: Props) => {
   return (
     <Transition appear show={!!error} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={handleClose}>
-        <Transition.Child
+        <DialogBackdrop className="fixed inset-0 bg-black/30" />
+
+        <TransitionChild
           as={Fragment}
           enter="ease-out duration-300"
           enterFrom="opacity-0"
@@ -29,11 +38,11 @@ export const ErrorDisplay = ({ error, onClose, btnText = "Retry" }: Props) => {
           leaveTo="opacity-0"
         >
           <div className="fixed inset-0 bg-black bg-opacity-25" />
-        </Transition.Child>
+        </TransitionChild>
 
         <div className="fixed inset-0 overflow-y-auto">
           <div className="flex min-h-full items-center justify-center p-4 text-center">
-            <Transition.Child
+            <TransitionChild
               as={Fragment}
               enter="ease-out duration-300"
               enterFrom="opacity-0 scale-95"
@@ -42,14 +51,14 @@ export const ErrorDisplay = ({ error, onClose, btnText = "Retry" }: Props) => {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                <Dialog.Title
+              <DialogPanel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                <DialogTitle
                   as="h3"
                   className="flex items-center text-lg font-medium leading-6 text-slate-900"
                 >
                   <ExclamationCircleIcon className="text-red-300 w-10 mr-2" />
                   An error occurred!
-                </Dialog.Title>
+                </DialogTitle>
                 <div className="mt-2">
                   <p className="text-sm text-slate-500">{error}</p>
                 </div>
@@ -57,14 +66,14 @@ export const ErrorDisplay = ({ error, onClose, btnText = "Retry" }: Props) => {
                 <div className="mt-4">
                   <button
                     type="button"
-                    className="primary-btn"
+                    className="btn primary-btn"
                     onClick={handleClose}
                   >
                     {btnText}
                   </button>
                 </div>
-              </Dialog.Panel>
-            </Transition.Child>
+              </DialogPanel>
+            </TransitionChild>
           </div>
         </div>
       </Dialog>

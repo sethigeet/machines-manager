@@ -19,10 +19,10 @@ function App() {
 
   const queryClient = useQueryClient();
 
-  const { data, isLoading, error, refetch } = useQuery(
-    ["getMachines"],
-    getMachines
-  );
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ["getMachines"],
+    queryFn: getMachines,
+  });
 
   return (
     <div>
@@ -34,24 +34,27 @@ function App() {
         </h1>
         <div className="mb-10 flex gap-3">
           <button
-            className="icon-btn primary-btn"
-            onClick={() => queryClient.invalidateQueries(["getMachineStatus"])}
+            className="btn icon-btn primary-btn"
+            onClick={() =>
+              queryClient.invalidateQueries({ queryKey: ["getMachineStatus"] })
+            }
           >
             <ArrowPathIcon className="w-4" />
             Refresh All
           </button>
           <button
-            className="icon-btn danger-btn"
+            className="btn icon-btn danger-btn"
             onClick={() => {
               if (!data) {
                 return;
               }
 
               const queryData =
-                queryClient.getQueriesData<MachineStatusResponse>([
-                  "getMachineStatus",
-                ]);
+                queryClient.getQueriesData<MachineStatusResponse>({
+                  queryKey: ["getMachineStatus"],
+                });
               const onMachineNames = queryData.reduce((acc, machine) => {
+                //@ts-ignore
                 const [[, name], { status }] = machine;
                 if (status === MachineStatus.Up) {
                   acc.push(name as string);
@@ -70,7 +73,7 @@ function App() {
             Shutdown All
           </button>
           <button
-            className="icon-btn success-btn"
+            className="btn icon-btn success-btn"
             onClick={() => setAddFormOpen(true)}
           >
             <PlusIcon className="w-4" />

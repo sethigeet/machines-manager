@@ -7,23 +7,26 @@ import { getAutoRefresh, setAutoRefresh } from "../api";
 export const Navbar = () => {
   const queryClient = useQueryClient();
 
-  const { data, isLoading, error, refetch } = useQuery(
-    ["getAutoRefresh"],
-    getAutoRefresh
-  );
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ["getAutoRefresh"],
+    queryFn: getAutoRefresh,
+  });
+
   const {
     mutate,
-    isLoading: isSetLoading,
+    isPending: isSetPending,
     error: setError,
-  } = useMutation(["setAutoRefresh"], setAutoRefresh, {
+  } = useMutation({
+    mutationKey: ["setAutoRefresh"],
+    mutationFn: setAutoRefresh,
     onSuccess: () => {
-      queryClient.invalidateQueries(["getAutoRefresh"]);
+      queryClient.invalidateQueries({ queryKey: ["getAutoRefresh"] });
     },
   });
 
   return (
     <div className="px-10 py-2 w-full flex justify-between items-center bg-blue-900 text-white">
-      <Loading loading={isLoading || isSetLoading} />
+      <Loading loading={isLoading || isSetPending} />
       <ErrorDisplay
         error={error?.toString() || setError?.toString()}
         onClose={refetch}

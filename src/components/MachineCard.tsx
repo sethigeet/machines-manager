@@ -10,7 +10,7 @@ import {
   PencilSquareIcon,
 } from "@heroicons/react/24/outline";
 import { useQuery } from "@tanstack/react-query";
-import formatDistance from "date-fns/formatDistance";
+import { formatDistance } from "date-fns/formatDistance";
 
 import { Machine, MachineStatus } from "../types";
 import { getMachineStatus } from "../api";
@@ -32,9 +32,10 @@ export const MachineCard = ({ machine }: Props) => {
     isRefetchError,
     refetch,
     dataUpdatedAt,
-  } = useQuery(["getMachineStatus", machine.name], () =>
-    getMachineStatus(machine.ip)
-  );
+  } = useQuery({
+    queryKey: ["getMachineStatus", machine.name],
+    queryFn: () => getMachineStatus(machine.ip),
+  });
 
   const iconClassNames = "rounded-2xl p-2";
   const btnClassNames = `small-circular-btn bg-blue-100 hover:bg-blue-200 focus-visible:ring-blue-500`;

@@ -1,7 +1,14 @@
 import { Fragment, useState } from "react";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Dialog, Transition } from "@headlessui/react";
+import {
+  Dialog,
+  DialogTitle,
+  DialogPanel,
+  Transition,
+  TransitionChild,
+  DialogBackdrop,
+} from "@headlessui/react";
 import { GlobeAltIcon, PlusIcon, UserIcon } from "@heroicons/react/24/outline";
 
 import { Machine } from "../types";
@@ -17,23 +24,22 @@ export const AddForm = ({ open, onClose }: Props) => {
   const [machine, setMachine] = useState<Machine>({} as Machine);
 
   const queryClient = useQueryClient();
-  const { mutate, isLoading, error, reset } = useMutation(
-    ["addMachine"],
-    addMachine,
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["getMachines"]);
-        onClose();
-      },
-    }
-  );
+  const { mutate, isPending, error, reset } = useMutation({
+    mutationKey: ["addMachine"],
+    mutationFn: addMachine,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getMachines"] });
+      onClose();
+    },
+  });
 
   return (
     <>
       <ErrorDisplay error={error?.toString()} onClose={reset} btnText="Ok" />
       <Transition appear show={open} as={Fragment}>
         <Dialog as="div" className="relative z-10" onClose={onClose}>
-          <Transition.Child
+          <DialogBackdrop className="fixed inset-0 bg-black/30" />
+          <TransitionChild
             as={Fragment}
             enter="ease-out duration-300"
             enterFrom="opacity-0"
@@ -43,11 +49,11 @@ export const AddForm = ({ open, onClose }: Props) => {
             leaveTo="opacity-0"
           >
             <div className="fixed inset-0 bg-black bg-opacity-25" />
-          </Transition.Child>
+          </TransitionChild>
 
           <div className="fixed inset-0 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4 text-center">
-              <Transition.Child
+              <TransitionChild
                 as={Fragment}
                 enter="ease-out duration-300"
                 enterFrom="opacity-0 scale-95"
@@ -56,14 +62,14 @@ export const AddForm = ({ open, onClose }: Props) => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="flex flex-col w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 align-middle shadow-xl transition-all">
-                  <Dialog.Title
+                <DialogPanel className="flex flex-col w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 align-middle shadow-xl transition-all">
+                  <DialogTitle
                     as="h3"
                     className="mx-auto flex items-center text-2xl font-medium leading-6 text-slate-900 border-b-2 border-b-slate-300"
                   >
                     <PlusIcon className="w-8 mr-2" />
                     Add a New Machine
-                  </Dialog.Title>
+                  </DialogTitle>
                   <form
                     className="mt-4"
                     onSubmit={(e) => {
@@ -98,11 +104,11 @@ export const AddForm = ({ open, onClose }: Props) => {
                     <div className="mt-4">
                       <button
                         type="submit"
-                        className="icon-btn primary-btn"
-                        disabled={isLoading}
+                        className="btn icon-btn primary-btn"
+                        disabled={isPending}
                       >
                         Add
-                        {isLoading ? (
+                        {isPending ? (
                           <div className="w-4 aspect-square border-2 border-blue-900 border-b-transparent rounded-full animate-spin" />
                         ) : (
                           <PlusIcon className="w-4" />
@@ -110,8 +116,8 @@ export const AddForm = ({ open, onClose }: Props) => {
                       </button>
                     </div>
                   </form>
-                </Dialog.Panel>
-              </Transition.Child>
+                </DialogPanel>
+              </TransitionChild>
             </div>
           </div>
         </Dialog>

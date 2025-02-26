@@ -1,7 +1,14 @@
 import { Fragment, useState } from "react";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Dialog, Transition } from "@headlessui/react";
+import {
+  Dialog,
+  DialogTitle,
+  DialogPanel,
+  Transition,
+  TransitionChild,
+  DialogBackdrop,
+} from "@headlessui/react";
 import {
   GlobeAltIcon,
   PencilSquareIcon,
@@ -25,23 +32,27 @@ export const EditForm = ({ initialData, open, onClose }: Props) => {
   const queryClient = useQueryClient();
   const {
     mutate: mutateEdit,
-    isLoading: isLoadingEdit,
+    isPending: isPendingEdit,
     error: errorEdit,
     reset: resetEdit,
-  } = useMutation(["editMachine", initialData.name], editMachine, {
+  } = useMutation({
+    mutationKey: ["editMachine", initialData.name],
+    mutationFn: editMachine,
     onSuccess: () => {
-      queryClient.invalidateQueries(["getMachines"]);
+      queryClient.invalidateQueries({ queryKey: ["getMachines"] });
       onClose();
     },
   });
   const {
     mutate: mutateDelete,
-    isLoading: isLoadingDelete,
+    isPending: isPendingDelete,
     error: errorDelete,
     reset: resetDelete,
-  } = useMutation(["deleteMachine", initialData.name], deleteMachine, {
+  } = useMutation({
+    mutationKey: ["deleteMachine", initialData.name],
+    mutationFn: deleteMachine,
     onSuccess: () => {
-      queryClient.invalidateQueries(["getMachines"]);
+      queryClient.invalidateQueries({ queryKey: ["getMachines"] });
       onClose();
     },
   });
@@ -58,7 +69,9 @@ export const EditForm = ({ initialData, open, onClose }: Props) => {
       />
       <Transition appear show={open} as={Fragment}>
         <Dialog as="div" className="relative z-10" onClose={onClose}>
-          <Transition.Child
+          <DialogBackdrop className="fixed inset-0 bg-black/30" />
+
+          <TransitionChild
             as={Fragment}
             enter="ease-out duration-300"
             enterFrom="opacity-0"
@@ -68,11 +81,11 @@ export const EditForm = ({ initialData, open, onClose }: Props) => {
             leaveTo="opacity-0"
           >
             <div className="fixed inset-0 bg-black bg-opacity-25" />
-          </Transition.Child>
+          </TransitionChild>
 
           <div className="fixed inset-0 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4 text-center">
-              <Transition.Child
+              <TransitionChild
                 as={Fragment}
                 enter="ease-out duration-300"
                 enterFrom="opacity-0 scale-95"
@@ -81,14 +94,14 @@ export const EditForm = ({ initialData, open, onClose }: Props) => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="flex flex-col w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 align-middle shadow-xl transition-all">
-                  <Dialog.Title
+                <DialogPanel className="flex flex-col w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 align-middle shadow-xl transition-all">
+                  <DialogTitle
                     as="h3"
                     className="mx-auto flex items-center text-2xl font-medium leading-6 text-slate-900 border-b-2 border-b-slate-300"
                   >
                     <PencilSquareIcon className="w-8 mr-2" />
                     Edit Machine
-                  </Dialog.Title>
+                  </DialogTitle>
                   <form
                     className="mt-4"
                     onSubmit={(e) => {
@@ -123,11 +136,11 @@ export const EditForm = ({ initialData, open, onClose }: Props) => {
                     <div className="mt-4">
                       <button
                         type="submit"
-                        className="icon-btn primary-btn"
-                        disabled={isLoadingEdit || isLoadingDelete}
+                        className="btn icon-btn primary-btn"
+                        disabled={isPendingEdit || isPendingDelete}
                       >
                         Edit
-                        {isLoadingEdit ? (
+                        {isPendingEdit ? (
                           <div className="w-4 aspect-square border-2 border-blue-900 border-b-transparent rounded-full animate-spin" />
                         ) : (
                           <PencilSquareIcon className="w-4" />
@@ -135,12 +148,12 @@ export const EditForm = ({ initialData, open, onClose }: Props) => {
                       </button>
                       <button
                         type="button"
-                        className="icon-btn danger-btn ml-3"
-                        disabled={isLoadingEdit || isLoadingDelete}
+                        className="btn icon-btn danger-btn ml-3"
+                        disabled={isPendingEdit || isPendingDelete}
                         onClick={() => mutateDelete(initialData.name)}
                       >
                         Delete
-                        {isLoadingDelete ? (
+                        {isPendingDelete ? (
                           <div className="w-4 aspect-square border-2 border-red-900 border-b-transparent rounded-full animate-spin" />
                         ) : (
                           <TrashIcon className="w-4" />
@@ -148,8 +161,8 @@ export const EditForm = ({ initialData, open, onClose }: Props) => {
                       </button>
                     </div>
                   </form>
-                </Dialog.Panel>
-              </Transition.Child>
+                </DialogPanel>
+              </TransitionChild>
             </div>
           </div>
         </Dialog>
